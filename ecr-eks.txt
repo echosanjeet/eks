@@ -1,0 +1,50 @@
+User name Password Access key ID		Secret access key						 Console login link
+devuser			   AKIAQ6V2BODN2UA4GTVO	tOBqmiKaUGXG4m/aQA528wn+RyLMgqSiK+KRNY3P https://065888415963.signin.aws.amazon.com/console
+
+
+
+
+ECR
+
+docker build -f k8s-demo\Dockerfile --force-rm -t k8s-svc .
+
+docker build --force-rm -t k8s-svc .
+
+docker tag k8s-svc 065888415963.dkr.ecr.us-east-1.amazonaws.com/kubernetes
+
+aws configure --profile "personal"
+
+aws ecr get-login-password --region us-east-1 --profile personal | docker login --username AWS --password-stdin 065888415963.dkr.ecr.us-east-1.amazonaws.com
+
+docker push 065888415963.dkr.ecr.us-east-1.amazonaws.com/kubernetes
+
+
+
+EKS
+
+aws configure
+aws sts get-caller-identity
+aws configure list
+
+eksctl create cluster --name=my-eks-cluster --region=us-east-1 --nodes=2 --node-type=t2.micro
+
+aws eks --region us-east-1 update-kubeconfig --name my-eks-cluster
+
+kubectl apply -f k8s-deployment.yml
+
+kubectl apply -f k8s-service.yml
+
+kubectl get nodes
+
+kubectl get pods
+
+kubectl get deployment
+
+kubectl get service
+
+******************************************************************************************
+Delete EKS
+
+kubectl delete svc k8s-demo
+
+eksctl delete cluster --name my-eks-cluster
